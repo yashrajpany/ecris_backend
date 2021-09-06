@@ -1,0 +1,22 @@
+{
+  "name": "ecris_backend",
+  "version": "1.0.0",
+  "description": "backend to our website ecris",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yashrajpany/ecris_backend.git"
+  },
+  "author": "Yashraj Pany",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yashrajpany/ecris_backend/issues"
+  },
+  "homepage": "https://github.com/yashrajpany/ecris_backend#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
