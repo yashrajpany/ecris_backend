@@ -18,5 +18,9 @@
   "homepage": "https://github.com/yashrajpany/ecris_backend#readme",
   "devDependencies": {
     "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
   }
 }
