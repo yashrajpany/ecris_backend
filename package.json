@@ -4,7 +4,8 @@
   "description": "backend to our website ecris",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "set NODE_ENV=production&&node server",
+    "dev":"nodemon server"
   },
   "repository": {
     "type": "git",
