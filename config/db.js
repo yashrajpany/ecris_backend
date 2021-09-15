@@ -4,7 +4,7 @@ const connectDB = async() => {
     const conn = await mongoose.connect(process.env.MONGO_URI, {
         useNewUrlParser:true
     })
-    console.log(`MongoDD connected: ${conn.connection.host}`.cyan.bold)
+    console.log(`MongoDB connected: ${conn.connection.host}`.cyan.bold)
 }
 
 module.exports = connectDB
