@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-// const slugify = require('slugify')
+const slugify = require('slugify')
 // const geocoder = require('../utils/geocoder')
 
 const BootcampSchema = new mongoose.Schema({
@@ -105,10 +105,10 @@ const BootcampSchema = new mongoose.Schema({
   toObject: { vituals: true}
 }) 
 
-// BootcampSchema.pre('save', function (next){
-//   this.slug = slugify(this.name, { lower: true})
-//   next()
-// })
+BootcampSchema.pre('save', function (next){
+  this.slug = slugify(this.name, { lower: true})
+  next()
+})
 
 // GEOCODER
 // BootcampSchema.pre('save', async function(next){
