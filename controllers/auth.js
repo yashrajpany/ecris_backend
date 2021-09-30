@@ -6,7 +6,7 @@ const asyncHandler = require('../middleware/async')
 // @route POST /api/v1/auth/register
 // @access Public
 exports.register = asyncHandler(async (req, res, next) => {
-  const { name, email, password, role } = req.body
+  const { name, email, password, role, key } = req.body
 
   //   Create User
   const user = await User.create({
@@ -14,6 +14,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     email,
     password,
     role,
+    key,
   })
 
   sendTokenResponce(user, 200, res)
