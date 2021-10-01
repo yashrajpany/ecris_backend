@@ -2,7 +2,6 @@ const ErrorResponce = require('../utils/errorResponce')
 const User = require('../models/User')
 const asyncHandler = require('../middleware/async')
 const sendEmail = require('../utils/sendEmail')
-const SendmailTransport = require('nodemailer/lib/sendmail-transport')
 const crypto = require('crypto')
 
 // @desc Register user
