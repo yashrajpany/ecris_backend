@@ -10,7 +10,12 @@ const {
 
 const User = require('../models/User')
 
+// Include other resource router
+const applyRouter = require('./apply')
 const router = express.Router({ mergeParams: true })
+
+// Re-route into other resource router
+router.use('/:userId/apply', applyRouter)
 
 const advancedResults = require('../middleware/advancedResults')
 const { protect, authorize } = require('../middleware/auth')
