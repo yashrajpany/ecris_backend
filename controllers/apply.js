@@ -2,6 +2,7 @@ const ErrorResponce = require('../utils/errorResponce')
 const Apply = require('../models/Apply')
 const Bootcamp = require('../models/Bootcamp')
 const asyncHandler = require('../middleware/async')
+const sendEmail = require('../utils/sendEmail')
 
 // // @desc      Get all applied to event
 // // @route     GET /api/v1/bootcamps/:bootcampId/apply
@@ -64,18 +65,26 @@ exports.applyEvent = asyncHandler(async (req, res, next) => {
   const apply = await Apply.find({ bootcamp: req.params.id, user: req.user.id })
 
   if (apply.length !== 1) {
+    // Sending email of confirmation
+    const message = `You have successfully applied to the event ${bootcamp.name}. The details for the following are: \n\n Mode of conduct:${bootcamp.mode} \n\n Address/Link:${bootcamp.location.formattedAddress} ${bootcamp.location.city} ${bootcamp.location.state} \n\n For further information contact below \n\n ${bootcamp.email} \n\n${bootcamp.phone}`
+
+    try {
+      await sendEmail({
+        email: req.user.email,
+        subject: 'Successfully applied to event from ECRIS',
+        message,
+      })
+    } catch (err) {
+      console.log(err)
+      return next(new ErrorResponce('Email could not be sent', 500))
+    }
+
+    // Applying to event
     await Apply.create({
       bootcamp: req.params.id,
       user: req.user.id,
     })
 
-    //   const message = `You are recieving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`
-
-    //   await sendEmail({
-    //     email: user.email,
-    //     subject: 'Successfully applied to event from ECRIS',
-    //     message,
-    //   })
     res.status(201).json({
       success: true,
       data: 'Successfully enrolled!',
