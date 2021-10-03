@@ -52,7 +52,6 @@ exports.getApplyEvent = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.applyEvent = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findById(req.params.id)
-
   if (!bootcamp) {
     return next(
       new ErrorResponce(
@@ -61,14 +60,29 @@ exports.applyEvent = asyncHandler(async (req, res, next) => {
       )
     )
   }
-  const result = await Apply.create({
-    bootcamp: req.params.id,
-    user: req.user.id,
-  })
-  res.status(201).json({
-    success: true,
-    data: result,
-  })
+
+  const apply = await Apply.find({ bootcamp: req.params.id, user: req.user.id })
+
+  if (apply.length !== 1) {
+    await Apply.create({
+      bootcamp: req.params.id,
+      user: req.user.id,
+    })
+
+    //   const message = `You are recieving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`
+
+    //   await sendEmail({
+    //     email: user.email,
+    //     subject: 'Successfully applied to event from ECRIS',
+    //     message,
+    //   })
+    res.status(201).json({
+      success: true,
+      data: 'Successfully enrolled!',
+    })
+  } else {
+    return next(new ErrorResponce(`Already enrolled to the event`, 409))
+  }
 })
 
 // @desc      Remove applied event
@@ -88,10 +102,10 @@ exports.removeApplyEvent = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponce(`Not authorized `, 401))
   }
 
-  await result.remove()
+  await Apply.findByIdAndDelete(req.params.id)
 
   res.status(200).json({
     success: true,
-    data: result,
+    data: 'Successfully disenroll',
   })
 })
