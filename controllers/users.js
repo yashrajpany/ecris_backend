@@ -66,11 +66,11 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
   })
 })
 
-// @desc      Delete user
-// @route     DELETE /api/v1/users/:id
+// @desc      Delete me
+// @route     DELETE /api/v1/users/
 // @access    Private/Admin
-exports.deleteUser = asyncHandler(async (req, res, next) => {
-  await User.findByIdAndDelete(req.params.id)
+exports.deleteMe = asyncHandler(async (req, res, next) => {
+  await User.findByIdAndDelete(req.user.id)
 
   res.status(200).json({
     success: true,
@@ -78,16 +78,17 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
   })
 })
 
-// @desc      Delete user using admin key
+// @desc      Remove a user using from admin key
 // @route     DELETE /api/v1/users/:id
 // @access    Private/Admin
 exports.deletePublisher = asyncHandler(async (req, res, next) => {
-  const key = req.params.id
-  const users = await User.find({ key })
-  bootcamp.remove()
+  const user = await User.findById(req.params.id)
+
+  user.key = undefined
+  await user.save()
 
   res.status(200).json({
     success: true,
-    data: users,
+    data: user,
   })
 })
