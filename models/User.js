@@ -17,6 +17,21 @@ const UserSchema = new mongoose.Schema({
       'Please add a valid email',
     ],
   },
+  phone: {
+    type: Number,
+    required: [true, 'Please add a phone number'],
+    minlength: 10,
+    maxlength: 10,
+  },
+  institute: {
+    type: Number,
+    required: [true, 'Please add your institute ID'],
+    maxlength: 4,
+  },
+  dept: {
+    type: String,
+    required: [true, 'Please add a department'],
+  },
   role: {
     type: String,
     enum: ['user', 'publisher'],
