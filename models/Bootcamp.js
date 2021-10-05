@@ -71,13 +71,13 @@ const BootcampSchema = new mongoose.Schema(
       required: true,
     },
     institude: {
-      type: Number,
+      type: String,
     },
     dept: {
       type: String,
     },
     phone: {
-      type: String,
+      type: Number,
     },
     createdAt: {
       type: Date,
