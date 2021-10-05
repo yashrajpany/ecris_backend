@@ -41,7 +41,7 @@ app.use(fileupload())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Mouting routers
-app.use('/api/v1/bootcamps', bootcamps)
+app.use('/api/v1/events', bootcamps)
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/users', users)
 app.use('/api/v1/reviews', reviews)
