@@ -20,8 +20,8 @@ const UserSchema = new mongoose.Schema({
   phone: {
     type: Number,
     required: [true, 'Please add a phone number'],
-    minlength: 10,
-    maxlength: 10,
+    min: 10,
+    max: 10,
   },
   institute: {
     type: String,
