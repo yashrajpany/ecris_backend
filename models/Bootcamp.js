@@ -70,7 +70,7 @@ const BootcampSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    institude: {
+    institute: {
       type: String,
     },
     dept: {
