@@ -62,35 +62,81 @@ exports.applyEvent = asyncHandler(async (req, res, next) => {
     )
   }
 
-  const apply = await Apply.find({ bootcamp: req.params.id, user: req.user.id })
-
-  if (apply.length !== 1) {
-    // Sending email of confirmation
-    const message = `You have successfully applied to the event ${bootcamp.name}. The details for the following are: \n\n Mode of conduct: ${bootcamp.mode} \n\n Address/Link: ${bootcamp.location.formattedAddress} ${bootcamp.location.city} ${bootcamp.location.state} \n\n For further information contact below \n\n ${bootcamp.email} \n\n ${bootcamp.phone}`
-
-    try {
-      await sendEmail({
-        email: req.user.email,
-        subject: 'Successfully applied to event from ECRIS',
-        message,
-      })
-    } catch (err) {
-      console.log(err)
-      return next(new ErrorResponce('Email could not be sent', 500))
-    }
-
-    // Applying to event
-    await Apply.create({
+  if (bootcamp.criteria === 'Public') {
+    const apply = await Apply.find({
       bootcamp: req.params.id,
       user: req.user.id,
     })
 
-    res.status(201).json({
-      success: true,
-      data: 'Successfully enrolled!',
+    if (apply.length !== 1) {
+      // Sending email of confirmation
+      const message = `You have successfully applied to the event ${bootcamp.name}. The details for the following are: \n\n Mode of conduct: ${bootcamp.mode} \n\n Address/Link: ${bootcamp.location.formattedAddress} ${bootcamp.location.city} ${bootcamp.location.state} \n\n For further information contact below \n\n ${bootcamp.email} \n\n ${bootcamp.phone}`
+
+      try {
+        await sendEmail({
+          email: req.user.email,
+          subject: 'Successfully applied to event from ECRIS',
+          message,
+        })
+      } catch (err) {
+        console.log(err)
+        return next(new ErrorResponce('Email could not be sent', 500))
+      }
+
+      // Applying to event
+      await Apply.create({
+        bootcamp: req.params.id,
+        user: req.user.id,
+      })
+
+      res.status(201).json({
+        success: true,
+        data: 'Successfully enrolled!',
+      })
+    } else {
+      return next(new ErrorResponce(`Already enrolled to the event`, 409))
+    }
+  } else if (
+    bootcamp.dept === req.user.dept &&
+    bootcamp.institute === req.user.institute
+  ) {
+    const apply = await Apply.find({
+      bootcamp: req.params.id,
+      user: req.user.id,
     })
+
+    if (apply.length !== 1) {
+      // Sending email of confirmation
+      const message = `You have successfully applied to the event ${bootcamp.name}. The details for the following are: \n\n Mode of conduct: ${bootcamp.mode} \n\n Address/Link: ${bootcamp.location.formattedAddress} ${bootcamp.location.city} ${bootcamp.location.state} \n\n For further information contact below \n\n ${bootcamp.email} \n\n ${bootcamp.phone}`
+
+      try {
+        await sendEmail({
+          email: req.user.email,
+          subject: 'Successfully applied to event from ECRIS',
+          message,
+        })
+      } catch (err) {
+        console.log(err)
+        return next(new ErrorResponce('Email could not be sent', 500))
+      }
+
+      // Applying to event
+      await Apply.create({
+        bootcamp: req.params.id,
+        user: req.user.id,
+      })
+
+      res.status(201).json({
+        success: true,
+        data: 'Successfully enrolled!',
+      })
+    } else {
+      return next(new ErrorResponce(`Already enrolled to the event`, 409))
+    }
   } else {
-    return next(new ErrorResponce(`Already enrolled to the event`, 409))
+    console.log(req.user.dept)
+    console.log(req.user.institute)
+    return next(new ErrorResponce(`This is a private event`, 400))
   }
 })
 
