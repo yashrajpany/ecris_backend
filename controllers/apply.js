@@ -70,7 +70,12 @@ exports.applyEvent = asyncHandler(async (req, res, next) => {
 
     if (apply.length !== 1) {
       // Sending email of confirmation
-      const message = `You have successfully applied to the event ${bootcamp.name}. The details for the following are: \n\n Mode of conduct: ${bootcamp.mode} \n\n Address/Link: ${bootcamp.location.formattedAddress} ${bootcamp.location.city} ${bootcamp.location.state} \n\n For further information contact below \n\n ${bootcamp.email} \n\n ${bootcamp.phone}`
+      let message
+      if (bootcamp.address) {
+        message = `You have successfully applied to the event ${bootcamp.name}. The details for the following are: \n\n Mode of conduct: ${bootcamp.mode} \n\n Address/Link: ${bootcamp.address} \n\n Date: ${bootcamp.date} \n\n Time: ${bootcamp.time} \n\n For further information contact below \n\n ${bootcamp.email} \n\n ${bootcamp.phone}`
+      } else {
+        message = `You have successfully applied to the event ${bootcamp.name}. The details for the following are: \n\n Mode of conduct: ${bootcamp.mode} \n\n Address/Link: ${bootcamp.link} \n\n Date: ${bootcamp.date} \n\n Time: ${bootcamp.time} \n\n For further information contact below \n\n ${bootcamp.email} \n\n ${bootcamp.phone}`
+      }
 
       try {
         await sendEmail({
