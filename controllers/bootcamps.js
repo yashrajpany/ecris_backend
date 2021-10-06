@@ -1,8 +1,10 @@
 const path = require('path')
 const ErrorResponce = require('../utils/errorResponce')
 const Bootcamp = require('../models/Bootcamp')
+const User = require('../models/User')
 const asyncHandler = require('../middleware/async')
 const geocoder = require('../utils/geocoder')
+const sendEmail = require('../utils/sendEmail')
 
 // @desc Get all bootcamps
 // @route GET /api/v1/bootcamps
@@ -54,6 +56,41 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   const bootcamp = await Bootcamp.create(req.body)
+
+  // Sending email to user for notification of event
+  if (req.body.criteria === 'Private') {
+    const user = await User.find({
+      dept: req.user.dept,
+      institute: req.user.institute,
+      role: 'user',
+    })
+    const emails = []
+    let message
+
+    Object.values(user).forEach((user) => {
+      emails.push(user.email)
+    })
+
+    // Sending email of confirmation
+    if (bootcamp.address) {
+      message = `A new event ${bootcamp.name} is added. The details for the following are: \n\n Mode of conduct: ${bootcamp.mode} \n\n Address/Link: ${bootcamp.address} \n\n Date: ${bootcamp.date} \n\n Time: ${bootcamp.time} \n\n For further information contact below \n\n ${bootcamp.email} \n\n ${bootcamp.phone}`
+    } else {
+      message = `A new event ${bootcamp.name} is added. The details for the following are: \n\n Mode of conduct: ${bootcamp.mode} \n\n Address/Link: ${bootcamp.link} \n\n Date: ${bootcamp.date} \n\n Time: ${bootcamp.time} \n\n For further information contact below \n\n ${bootcamp.email} \n\n ${bootcamp.phone}`
+    }
+
+    emails.forEach(async (email) => {
+      try {
+        await sendEmail({
+          email: email,
+          subject: `New event from ${req.user.name} ECRIS`,
+          message,
+        })
+      } catch (err) {
+        console.log(err)
+        return next(new ErrorResponce('Email could not be sent', 500))
+      }
+    })
+  }
 
   res.status(201).json({
     success: true,
