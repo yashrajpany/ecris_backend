@@ -17,7 +17,7 @@ const BootcampSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Add a description'],
       trim: true,
-      maxlength: [500, 'Name can not be more than 500 characters'],
+      maxlength: [500, 'Description can not be more than 500 characters'],
     },
     email: {
       type: String,
@@ -129,8 +129,6 @@ BootcampSchema.pre('save', async function (next) {
     country: loc[0].countryCode,
   }
 
-  // Do not put address in DB
-  this.address = undefined
   next()
 })
 
