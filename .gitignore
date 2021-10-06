@@ -1,5 +1,4 @@
-node_modules
-.DS_Store
-_data
+node_modules/
 config/config.env
+_data
 seeder.js
